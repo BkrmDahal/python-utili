@@ -11,7 +11,7 @@ from email.mime.text import MIMEText
 from apiclient import errors, discovery
 
 #path to access token not client secret json, use access_token.py to make token from client json
-ACCESS_TOKEN_PATH = "M:\\everjobs\\bi_toolbox3\\.credentials\\gmail-python-email.json"#path to access token ###change this###
+ACCESS_TOKEN_PATH = "M:\\gmail-python-email.json" ###change this###
 
 def _get_credentials(access_token_path=ACCESS_TOKEN_PATH):
     """get the credentials from access token"""
@@ -23,7 +23,7 @@ def _get_credentials(access_token_path=ACCESS_TOKEN_PATH):
 def send_email(subject: str, 
                msgHtml: "str or html str",
                to: list=['bkrm.dahal@gmail.com'],
-               sender: str='Python scripts') -> "display message id or error if any":
+               sender: str='Python scripts') -> "display message id or error":
     credentials = _get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
@@ -32,7 +32,8 @@ def send_email(subject: str,
 
 def _send_message_internal(service, user_id, message):
     try:
-        message = (service.users().messages().send(userId=user_id, body=message).execute())
+        message = (service.users().messages().send(userId=user_id, 
+                                                   body=message).execute())
         print('Message Id: %s' % message['id'])
         return message
     except errors.HttpError as error:
@@ -58,9 +59,12 @@ def email_of_completion(subject:'subject of mail',
         def wrapper(*args, **kwags):
             try:
                 func(*args, **kwags)
-                send_email('✔️ ' + subject +' SUCCESS', "You scripts has run sucessfully.", to=to)
+                send_email('✔️ ' + subject +' SUCCESS', 
+                           "You scripts has run sucessfully.", to=to)
             except Exception as e:
-                send_email('❌   ' + subject + ' ERROR', "There is error with your script \r\n \r\n ERROR \r\n {}.".format(traceback.format_exc()), to=to)
+                send_email('❌   ' + subject + ' ERROR', 
+                           "Error with your script \r\n \r\n ERROR \r\n {}.".format(
+                               traceback.format_exc()), to=to)
         return wrapper
     return f
 
