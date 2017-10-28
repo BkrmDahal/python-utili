@@ -1,4 +1,6 @@
 """Makes access token for google API"""
+# !pip install --upgrade google-api-python-client httplib2 oauth2client apiclient
+
 import os
 
 import oauth2client
