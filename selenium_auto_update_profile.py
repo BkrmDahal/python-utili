@@ -1,4 +1,5 @@
-"""update booking.com profile using selenium"""
+"""update booking.com 
+profile using selenium"""
 
 import time
 from selenium import webdriver
